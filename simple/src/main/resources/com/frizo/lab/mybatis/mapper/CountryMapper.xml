@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.frizo.lab.mybatis.mapper.CountryMapper">
+<!--    定義一個select查詢-->
+<!--    id 屬性定義當前 select 查詢的唯一一個 id-->
+<!--    resultType 定義返回類型值，如果 mybatis-config.xml 沒有設定別名，那需要輸入完整類路徑(com.frizo.lab..)-->
+    <select id="selectAll" resultType="Country">
+		select id,countryname,countrycode from country
+	</select>
+</mapper>
