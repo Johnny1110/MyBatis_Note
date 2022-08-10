@@ -1,9 +1,15 @@
 package com.frizo.lab.mybatis.model;
 
+import com.frizo.lab.mybatis.utils.NonEssential;
+
 public class Country {
     private Long id;
     private String countryname;
-    private String countrycode;
+    private Boolean a;
+    @NonEssential
+    private boolean b;
+    @NonEssential
+    public String countrycode;
 
     public Long getId() {
         return id;
@@ -27,5 +33,21 @@ public class Country {
 
     public void setCountrycode(String countrycode) {
         this.countrycode = countrycode;
+    }
+
+    public Boolean getA() {
+        return a;
+    }
+
+    public void setA(Boolean a) {
+        this.a = a;
+    }
+
+    public boolean isB() {
+        return b;
+    }
+
+    public void setB(boolean b) {
+        this.b = b;
     }
 }

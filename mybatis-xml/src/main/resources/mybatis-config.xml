@@ -3,15 +3,16 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-<!--    配置 log4j 作為輸出日誌-->
+    <!--    配置 log4j 作為輸出日誌-->
     <settings>
         <setting name="logImpl" value="LOG4J"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/> <!-- 開啟欄位映射 entity 時下滑線自動轉駝峰字 -->
     </settings>
-<!--配置常用 package 別名-->
+    <!--配置常用 package 別名-->
     <typeAliases>
         <package name="com.frizo.lab.mybatis.model"/>
     </typeAliases>
-<!--配置資料庫連線-->
+    <!--配置資料庫連線-->
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC">
@@ -26,8 +27,8 @@
         </environment>
     </environments>
 
-<!--    MyBatis 的 SQL 語句與映射配置文件-->
+    <!--    MyBatis 的 SQL 語句與映射配置文件-->
     <mappers>
-        <mapper resource="com/frizo/lab/mybatis/mapper/CountryMapper.xml"/>
+        <package name="com.frizo.lab.mybatis.mapper"/>
     </mappers>
 </configuration>
