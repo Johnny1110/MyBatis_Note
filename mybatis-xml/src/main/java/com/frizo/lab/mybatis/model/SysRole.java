@@ -15,20 +15,20 @@ public class SysRole implements Serializable {
 
 	private String roleName;
 
-	private Enabled enabled;
+	private boolean enabled;
 
 	private String createBy;
 
 	private Date createTime;
 
-	List<SysPrivilege> privilegeList;
+	private SysUser user;
 
-	public List<SysPrivilege> getPrivilegeList() {
-		return privilegeList;
+	public SysUser getUser() {
+		return user;
 	}
 
-	public void setPrivilegeList(List<SysPrivilege> privilegeList) {
-		this.privilegeList = privilegeList;
+	public void setUser(SysUser user) {
+		this.user = user;
 	}
 
 	public Long getId() {
@@ -47,14 +47,6 @@ public class SysRole implements Serializable {
 		this.roleName = roleName;
 	}
 
-	public Enabled getEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(Enabled enabled) {
-		this.enabled = enabled;
-	}
-
 	public String getCreateBy() {
 		return createBy;
 	}
@@ -69,5 +61,13 @@ public class SysRole implements Serializable {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }
