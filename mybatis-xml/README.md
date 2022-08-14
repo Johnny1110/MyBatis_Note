@@ -235,3 +235,123 @@ INSERT INTO mybatis.sys_user_role (user_id, role_id) VALUES (1001, 2);
 	</select>
 ```
 
+<br>
+<br>
+<br>
+<br>
+
+## insert 用法
+
+<br>
+
+範例：
+
+<br>
+
+```xml
+<insert id="insertWithSelectKey">
+	insert into sys_user(
+				user_name, user_password, user_email, user_info, head_img, create_time
+
+	)
+	values(#{userName}, #{userPassword}, #{userEmail},
+		#{userInfo}, #{headImg, jdbcType=BLOB}, #{createTime, jdbcType=TIMESTAMP})
+	<selectKey keyColumn="id" resultType="long" keyProperty="id" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
+</insert>
+```
+
+<br>
+
+以上是新增一筆資料後，回填 key 值。(key 是自動增加的)
+
+<br>
+
+mysql 可以在新增完資料後取得剛剛新增的資料 PK 值，使用 `SELECT LAST_INSERT_ID()` 就可以知道剛剛新增的資料 PK 值是多少，並回填。
+
+Oracle 就不行了，因為它不支援 PK 自動增值，它的作法是在新增前使用序列得到一個值，然後把值賦予 id，再將資料寫入。所以它的 PK 值是在寫入前就已經知道了的。對於 Oracle，寫法要換成如下：
+
+<br>
+
+
+```xml
+<insert id="insertWithSelectKey">
+    <selectKey keyColumn="id" resultType="long" keyProperty="id" order="BEFORE">
+		SELECT SEQ_ID.nextval from dual
+	</selectKey>
+	insert into sys_user(
+				id, user_name, user_password, user_email, user_info, head_img, create_time
+
+	)
+	values(#{id}, #{userName}, #{userPassword}, #{userEmail},
+		#{userInfo}, #{headImg, jdbcType=BLOB}, #{createTime, jdbcType=TIMESTAMP})
+</insert>
+```
+
+<br>
+
+selectKey 的 order 欄位值填 `BEFORE` 意思是值是在 insert 前取得， `AFTER` 指在 insert 後取得。所以在使用 mysql 或 oracle 要注意區分。 selectKey 插入 xml 的位置不重要，order 值才重要。
+
+<br>
+
+其他支援 PK autoIncrease 的 DB，selectKey 需要帶入的語法這邊總結一下：
+
+<br>
+
+* DB2： `VALUES IDENTITY_VAL_LOCAL()`
+
+* MYSQL： `SELECT LAST_INSERT_ID()`
+
+* SQL_SERVER： `SELECT SCOPE_IDENTITY()`
+
+* DERBY `VALUES IDENTITY_VAL_LOCAL()`
+
+* CLOUDSCAPE： `VALUES IDENTITY_VAL_LOCAL()`
+
+* INFORMIX： `select dbinfo('sqlca.sqlerrd1') from systables where tabid=1`
+
+<br>
+<br>
+<br>
+<br>
+
+## update 用法
+
+<br>
+
+範例：
+
+<br>
+
+```xml
+<update id="update">
+	update sys_user
+	set user_name = #{userName},
+		user_password = #{userPassword},
+		user_email = #{userEmail},
+		user_info = #{userInfo},
+		head_img = #{headImg, jdbcType=BLOB},
+		create_time = #{createTime, jdbcType=TIMESTAMP}
+	where id = #{id}
+</update>
+```
+
+<br>
+<br>
+<br>
+<br>
+
+## update 用法
+
+<br>
+
+範例：
+
+<br>
+
+```xml
+<delete id="delete">
+	delete from sys_user where id = #{id}
+</delete>
+```
