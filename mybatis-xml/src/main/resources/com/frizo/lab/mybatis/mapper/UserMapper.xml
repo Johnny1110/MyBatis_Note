@@ -100,4 +100,16 @@
 		delete from sys_user where id = #{id}
 	</delete>
 
+	<select id="selectRolesByUserIdAndRoleEnabled" resultType="com.frizo.lab.mybatis.model.SysRole">
+		select
+		sr.id,
+		sr.role_name,
+		sr.enabled,
+		sr.create_by,
+		sr.create_time
+		from sys_role as sr
+		inner join sys_user_role as sur on sur.role_id = sr.id
+		where sur.user_id = #{userId} and sr.enabled = #{enabled}
+	</select>
+
 </mapper>

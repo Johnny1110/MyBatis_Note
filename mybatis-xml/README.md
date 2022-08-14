@@ -355,3 +355,172 @@ selectKey 的 order 欄位值填 `BEFORE` 意思是值是在 insert 前取得，
 	delete from sys_user where id = #{id}
 </delete>
 ```
+
+<br>
+<br>
+<br>
+<br>
+
+## 當 query 參數大於 1 個時
+
+<br>
+
+當 query 參數大於 1 個時，我們可以包成 Bean：
+
+<br>
+
+```java
+int update(SysUser sysUser);
+```
+
+<br>
+
+__SysUser__ 中包了很多參數，在 xml 中取用也很簡單：
+
+<br>
+
+```xml
+<update id="update">
+	update sys_user
+	set user_name = #{userName},
+		user_password = #{userPassword},
+		user_email = #{userEmail},
+		user_info = #{userInfo},
+		head_img = #{headImg, jdbcType=BLOB},
+	create_time = #{createTime, jdbcType=TIMESTAMP}
+	where id = #{id}
+</update>
+```
+
+<br>
+
+如果今天有個方法用到 2 個參數以上：
+
+<br>
+
+```java
+public List<SysRole> selectRolesByUserIdAndRoleEnabled(Long userId, ("enabled") Integer enabled);
+```
+
+<br>
+
+xml 中這樣配置：
+
+<br>
+
+```xml
+<select id="selectRolesByUserIdAndRoleEnabled" resultType="com.frizo.lab.mybatis.model.SysRole">
+	select
+	    sr.id,
+		sr.role_name,
+		sr.enabled,
+		sr.create_by,
+		sr.create_time
+	from sys_role as sr
+	inner join sys_user_role as sur on sur.role_id = sr.id
+	where sur.user_id = #{userId} and sr.enabled = #{enabled}
+</select>
+```
+
+<br>
+
+這樣執行方法一定會出錯：
+
+<br>
+
+```
+Cause: org.apache.ibatis.binding.BindingException: 
+    Parameter 'userId' not found. Available parameters are [0, 1, param1, param2]
+```
+
+<br>
+
+Mybatis 遇到 JavaBean 可以自動映射 JavaBean 值對應名稱，但是使用 Java 基本類就沒辦法識別了。他只知道 [0, 1, param1, param2]。有人會問，之前一個值明明就可以，那是因為就一個值，Mybatis 不管那麼多直接抓來用了。
+
+<br>
+
+改變一下 interface 的參數輸入就可以用了：
+
+<br>
+
+```
+List<SysRole> selectRolesByUserIdAndRoleEnabled(@Param("userId") Long userId,@Param("enabled") Integer enabled);
+```
+
+<br>
+
+加入 `@Param` Mybatis 自動將參數封裝成 __Map__。`@Param` 的值就是 key。
+
+<br>
+
+如果需要使用 2 個 Bean 作為 query 參數需要這樣寫：
+
+<br>
+
+```java
+List<SysRole> selectRolesByUserIdAndRoleEnabled(@Param("user") SysUser user,@Param("role") SysRole role);
+```
+
+<br>
+
+xml 中調用要這樣用：`# {user.id}` 與 `#{role.enabled}`
+
+<br>
+<br>
+<br>
+<br>
+
+## Mapper interface 動態代理實現原理
+
+<br>
+
+如果好其為甚麼定義了 Mapper 介面之後，用 `sqlSession.getMapper()` 就可以取得 mapper 實現，那是因為 Mybatis 使用了動態代理機制，下面使用一個範例說明：
+
+<br>
+
+```java
+public class MyMapperProxy<T> implements InvocationHandler {
+
+    private Class<T> mapperInterface;
+
+    private SqlSession sqlSession;
+
+    public MyMapperProxy(Class<T> mapperInterface, SqlSession sqlSession){
+        this.mapperInterface = mapperInterface;
+        this.sqlSession = sqlSession;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        return sqlSession.<T>selectList(
+                // 拼接方法出完整方法路徑+名稱
+                mapperInterface.getCanonicalName() + "." + method.getName()
+        );
+    }
+}
+```
+
+<br>
+
+測試：
+
+<br>
+
+```java
+public class MyMapperProxyTest extends BaseMapperTest {
+
+    @Test
+    public void testInvocation(){
+        try(SqlSession sqlSession = getSqlSession()){
+            MyMapperProxy<UserMapper> mapperProxy = new MyMapperProxy<>(UserMapper.class, sqlSession);
+            UserMapper userMapper = (UserMapper) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                    new Class[]{UserMapper.class},
+                    mapperProxy);
+            List<SysUser> users = userMapper.selectAll();
+            Assert.assertTrue(users.size() > 0);
+        }
+    }
+
+}
+```
+

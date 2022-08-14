@@ -2,6 +2,7 @@ package com.frizo.lab.mybatis.mapper;
 
 import com.frizo.lab.mybatis.model.SysRole;
 import com.frizo.lab.mybatis.model.SysUser;
+import org.apache.ibatis.annotations.Param;
 
 
 import java.util.List;
@@ -23,5 +24,7 @@ public interface UserMapper {
     int update(SysUser sysUser);
 
     int delete(SysUser sysUser);
+
+    List<SysRole> selectRolesByUserIdAndRoleEnabled(@Param("userId") Long userId,@Param("enabled") Integer enabled);
 
 }
