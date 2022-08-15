@@ -1,3 +1,7 @@
+create database mybatis;
+
+use mybatis;
+
 create table country
 (
     id          int auto_increment
@@ -117,4 +121,3 @@ create table `user info`
     id int not null
         primary key
 );
-
