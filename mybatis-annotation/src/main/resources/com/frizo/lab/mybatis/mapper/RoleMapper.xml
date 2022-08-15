@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.frizo.lab.mybatis.mapper.RoleMapper">
+
+	<select id="selectRolesByUserId" resultType="com.frizo.lab.mybatis.model.SysRole">
+		select r.id,
+		       r.role_name,
+		       r.enabled,
+		       r.create_by,
+		       r.create_time
+		from sys_role r
+		inner join sys_user_role ur on r.id = ur.role_id
+		where ur.user_id = #{userId}
+	</select>
+
+</mapper>
