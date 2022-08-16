@@ -27,4 +27,8 @@ public interface UserMapper {
 
     List<SysRole> selectRolesByUserIdAndRoleEnabled(@Param("userId") Long userId,@Param("enabled") Integer enabled);
 
+    List<SysUser> selectByUser(SysUser sysUser);
+
+    // 選擇性更新以 Selective 為後綴
+    int updateByIdSelective(SysUser sysUser);
 }

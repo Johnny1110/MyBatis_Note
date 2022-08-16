@@ -22,6 +22,14 @@ MyBatis 學習筆記
 
 ## Mybatis XML 基本使用方法：[mybatis-xml](mybatis-xml/README.md) （說明都註解在 code 裡）
 
+<br>
+
+## Mybatis Annotation 基本使用方法（不建議使用）：[mybatis-annotation](mybatis-annotation/README.md) （說明都註解在 code 裡）
+
+<br>
+
+## Mybatis 動態 SQL：[mybatis-dynmicSql](mybatis-dynmicSql/README.md) （說明都註解在 code 裡）
+
 
 
 

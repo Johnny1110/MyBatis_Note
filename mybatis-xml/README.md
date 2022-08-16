@@ -520,7 +520,6 @@ public class MyMapperProxyTest extends BaseMapperTest {
             Assert.assertTrue(users.size() > 0);
         }
     }
-
 }
 ```
 
