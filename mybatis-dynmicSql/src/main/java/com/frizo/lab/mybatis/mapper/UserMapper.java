@@ -31,4 +31,6 @@ public interface UserMapper {
 
     // 選擇性更新以 Selective 為後綴
     int updateByIdSelective(SysUser sysUser);
+
+    SysUser selectByIdOrUserName(SysUser sysUser);
 }

@@ -152,6 +152,13 @@ public class UserMapperTest extends BaseMapperTest {
             query.setUserEmail("johnnywang@gashpoint.com");
             users = userMapper.selectByUser(query);
             Assert.assertEquals(0, users.size());
+
+            // 用空查
+            query = new SysUser();
+            query.setUserName("");
+            query.setUserEmail("");
+            users = userMapper.selectByUser(query);
+            Assert.assertEquals(2, users.size());
         }
     }
 
@@ -169,6 +176,42 @@ public class UserMapperTest extends BaseMapperTest {
             Assert.assertEquals("admin", user.getUserName());
             Assert.assertEquals("testUpdate@gmail.com", user.getUserEmail());
             sqlSession.rollback();
+        }
+    }
+
+    @Test
+    public void testInsertSelective(){
+        try(SqlSession sqlSession = getSqlSession()){
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            SysUser user = new SysUser();
+            user.setUserName("test_selective");
+            user.setUserPassword("123123");
+            user.setUserInfo("test info");
+            user.setCreateTime(new Date());
+            userMapper.insertReturnKey(user);
+            user = userMapper.selectById(user.getId());
+            Assert.assertEquals("test@mybatis.org", user.getUserEmail());
+            sqlSession.rollback();
+        }
+    }
+
+    @Test
+    public void testSelectByIdOrUserName(){
+        try(SqlSession sqlSession = getSqlSession()){
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            SysUser query = new SysUser();
+            query.setId(1L);
+            query.setUserName("admin");
+            SysUser user = userMapper.selectByIdOrUserName(query);
+            Assert.assertNotNull(user);
+            // set id = null
+            query.setId(null);
+            user = userMapper.selectByIdOrUserName(query);
+            Assert.assertNotNull(user);
+            // set name = null
+            query.setUserName(null);
+            user = userMapper.selectByIdOrUserName(query);
+            Assert.assertNull(user);
         }
     }
 }

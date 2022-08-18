@@ -66,10 +66,17 @@
 	<!-- 當需要配置複合 PK 時，可以使用 ',' 隔開。通常還需要配置 keyColumn 屬性。-->
  	<insert id="insertReturnKey" useGeneratedKeys="true" keyProperty="id">
 		insert into sys_user(
-					user_name, user_password, user_email, user_info, head_img, create_time
+					user_name, user_password,
+					 <if test="userEmail != null and userEmail != ''">
+						 user_email,
+					 </if>
+					 user_info, head_img, create_time
 
 		)
-		values(#{userName}, #{userPassword}, #{userEmail},
+		values(#{userName}, #{userPassword},
+		<if test="userEmail != null and userEmail != ''">
+			#{userEmail},
+		</if>
 			#{userInfo}, #{headImg, jdbcType=BLOB}, #{createTime, jdbcType=TIMESTAMP})
 	</insert>
 
@@ -121,18 +128,19 @@
 			head_img,
 			create_time
 		from sys_user
-		where 1 = 1
-		<if test="userName != null and userName != ''">
-			and user_name like concat('%', #{userName}, '%')
-		</if>
-		<if test="userEmail != null and userEmail != ''">
-			and user_email = #{userEmail}
-		</if>
+		<where>
+			<if test="userName != null and userName != ''">
+				and user_name like concat('%', #{userName}, '%')
+			</if>
+			<if test="userEmail != null and userEmail != ''">
+				and user_email like concat('%', #{userEmail}, '%')
+			</if>
+		</where>
 	</select>
 
 	<update id="updateByIdSelective">
 		update sys_user
-		set
+		<set>
 			<if test="userName != null and userName != ''">
 				user_name = #{userName},
 			</if>
@@ -151,9 +159,35 @@
 			<if test="createTime != null and createTime != ''">
 				create_time = #{createTime, jdbcType=TIMESTAMP},
 			</if>
-			id = #{id}
+-- 			必須留 id 是因為 set 裡面不能為空，不然會出錯，以防上面 if 都沒值
+			id = #{id},
+		</set>
+
 		where
 			id = #{id}
 	</update>
+
+	<select id="selectByIdOrUserName" resultType="com.frizo.lab.mybatis.model.SysUser">
+		select id,
+			user_name,
+			user_password,
+			user_email,
+			user_info,
+			head_img,
+			create_time
+		from sys_user
+		where 1 = 1
+		<choose>
+			<when test="id != null">
+				and id = #{id}
+			</when>
+			<when test="userName != null and userName != ''">
+				and user_name = #{userName}
+			</when>
+			<otherwise>
+				and 1 = 2
+			</otherwise>
+		</choose>
+	</select>
 
 </mapper>
