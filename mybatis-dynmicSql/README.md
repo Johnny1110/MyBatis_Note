@@ -262,3 +262,104 @@ trim 會把最後結尾 `id = #{id},` 後面的 `,` 拔掉。
 * suffix：當 trim 元素內包含內容時，會給內容增加 prefix 指定的後綴
 
 * suffixOverrides：當 trim 元素內包含內容時，會去掉內容中匹配的後綴字符去掉
+
+<br>
+<br>
+<br>
+<br>
+
+## foreach 用法
+
+<br>
+
+### foreach 實現 in 集合
+
+<br>
+
+UserMapper.java
+```java
+List<SysUser> selectByIdList(@Param("idList") List<Long> idList);
+```
+
+<br>
+
+UserMapper.xml
+
+```xml
+	<select id="selectByIdList" resultType="com.frizo.lab.mybatis.model.SysUser">
+		select id,
+			user_name userName,
+			user_password userPassword,
+			user_email userEmail,
+			user_info userInfo,
+			head_img headImg,
+			create_time createTime
+		from sys_user
+		where id in
+		<foreach collection="idList" open="(" close=")" separator="," item="id" index="i">
+			#{id}
+		</foreach>
+	</select>
+```
+
+<br>
+<br>
+
+### foreach 實現批量插入
+
+<br>
+
+如果要返回 id 就不支援使用 `@Param`，且只有 MySQL 可以批量回傳 ID，還必須是自動 key 生成。
+
+```java
+int insertList(List<SysUser> userList);
+```
+
+<br>
+
+```xml
+	<insert id="insertList" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_user(
+			user_name, user_password, user_email, user_info, head_img, create_time
+		) values
+		<foreach collection="list" item="user" separator=",">
+			(
+				#{user.userName}, #{user.userPassword},
+				 #{user.userEmail}, #{user.userInfo},
+				  #{user.headImg, jdbcType=BLOB}, #{user.createTime, jdbcType=TIMESTAMP}
+			)
+		</foreach>
+	</insert>
+```
+
+<br>
+<br>
+
+### foreach 實現動態 update
+
+<br>
+
+```java
+int updateByMap(Map<String, Object> map);
+```
+
+<br>
+
+map 預設使用 `_parameter` 代表，也可以自訂使用 `@Param`
+
+<br>
+
+```xml
+	<update id="updateByMap">
+		update sys_user
+		set
+			<foreach collection="_parameter" item="val" index="key" separator=",">
+				${key} = #{val}
+			</foreach>
+		where id = #{id}
+	</update>
+```
+
+<br>
+
+<br>

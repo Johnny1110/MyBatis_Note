@@ -6,8 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class UserMapperTest extends BaseMapperTest {
 
@@ -212,6 +211,55 @@ public class UserMapperTest extends BaseMapperTest {
             query.setUserName(null);
             user = userMapper.selectByIdOrUserName(query);
             Assert.assertNull(user);
+        }
+    }
+
+    @Test
+    public void testSelectByIdList() {
+        try(SqlSession sqlSession = getSqlSession()){
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            List<Long> idList = new ArrayList<>();
+            idList.add(1L);
+            idList.add(1001L);
+            List<SysUser> userList = userMapper.selectByIdList(idList);
+            Assert.assertEquals(2, userList.size());
+        }
+    }
+
+    @Test
+    public void testInsertList() {
+        try(SqlSession sqlSession = getSqlSession()){
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            List<SysUser> userList = new ArrayList<>();
+            for (int i = 0; i < 2; i++){
+                SysUser user = new SysUser();
+                user.setUserName("test_" + i);
+                user.setUserPassword("123123");
+                user.setUserEmail("test@mybatis.org");
+                userList.add(user);
+            }
+            int result = userMapper.insertList(userList);
+            Assert.assertEquals(2, result);
+            userList.forEach(u -> {
+                System.out.println(u.getId());
+            });
+            sqlSession.rollback();
+        }
+    }
+
+    @Test
+    public void testUpdateByMap(){
+        try(SqlSession session = getSqlSession()){
+            UserMapper userMapper = session.getMapper(UserMapper.class);
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", 1L);
+            map.put("user_email", "test@gmail.com");
+            map.put("user_password", "1qazxsw2");
+            userMapper.updateByMap(map);
+            SysUser user = userMapper.selectById(1L);
+            Assert.assertEquals(user.getUserPassword(), "1qazxsw2");
+            Assert.assertEquals(user.getUserEmail(), "test@gmail.com");
+            session.rollback();
         }
     }
 }

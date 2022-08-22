@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserMapper {
 
@@ -33,4 +34,10 @@ public interface UserMapper {
     int updateByIdSelective(SysUser sysUser);
 
     SysUser selectByIdOrUserName(SysUser sysUser);
+
+    List<SysUser> selectByIdList(@Param("idList") List<Long> idList);
+
+    int insertList(List<SysUser> userList);
+
+    int updateByMap(Map<String, Object> map);
 }
