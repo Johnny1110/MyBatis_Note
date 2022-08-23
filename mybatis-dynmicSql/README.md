@@ -361,5 +361,123 @@ map 預設使用 `_parameter` 代表，也可以自訂使用 `@Param`
 ```
 
 <br>
+<br>
+<br>
+<br>
+
+## bind 用法
 
 <br>
+
+先前的 `selectByUser()` 方法，從 MySQL 換其他 DB 也許就不能 `concat('%', #{userName}, '%')`，像 Oracle 就不支援。
+
+可以改用 bind 標籤完成：
+
+```xml
+<if test="userName != null and userName != ''">
+	<bind name="userNameLike" value="'%' + userName + '%'"/>
+	and user_name like #{userNameLike}
+</if>
+```
+
+<br>
+<br>
+<br>
+<br>
+
+## OGNL 用法
+
+<br>
+
+1. `e1 or e2`
+
+2. `e1 and e2`
+
+3. `e1 == e2` 或 `e1 eq e2`
+
+4. `e1 != e2` 或 `e1 neq e2`
+
+5. `e1 lt e2` : 小於
+
+6. `e1 lte e2` : 小於等於，`gt`（大於） `gte`（大於等於）
+
+7. `e1 + e2`丶 `e1 * e2`丶 `e1/e2`丶 `e1 - e2`丶 `e1%e2`
+
+8. `!e` 或 `not e`: 非 取反
+
+9. `e.mathod(args)`: 調用對象方法
+
+10. `e.property`: 對象屬性值
+
+11. `e1[ e2 ]`: 按索引取值（List Array 和 Map）
+
+12. `@class@method(args)`: 調用類別靜態方法
+
+13. `@class@field`: 調用類別靜態屬性值
+
+<br>
+
+判斷集合是否為空時，可以這樣做：
+
+<br>
+
+```xml
+<if test="list != null ande list.size() > 0">
+	...
+</if>
+```
+
+<br>
+
+示範一下 `@class@method(args)` 怎麼用：
+
+<br>
+
+```xml
+<if test="com.frizo.lab.mybatis.util.StringUtil@isNotEmpty(userName)">
+	and user_name like concat('%', #{userName}, '%')
+</if>
+```
+
+<br>
+
+其中 StringUtil 類如下：
+
+<br>
+
+```java
+public class StringUtil {
+	public static boolean isEmpty(String str){
+		return str == null || str.length() == 0;
+	}
+
+	public static boolean isNotEmpty(String str){
+		return !isEmpty(str);
+	}
+}
+```
+
+<br>
+
+如果想知道映射 XML 中方法執行的參數，可以先在 Java 類中添加：
+
+<br>
+
+```java
+public static void print(Object param) {
+	System.out.println(param);
+}
+```
+
+<br>
+
+然後在映射文件中的方法標籤添加：
+
+<br>
+
+```xml
+<bind name="print" value="com.frizo.lab.mybatis.util.StringUtil@print(_parameter)"/>
+```
+
+
+

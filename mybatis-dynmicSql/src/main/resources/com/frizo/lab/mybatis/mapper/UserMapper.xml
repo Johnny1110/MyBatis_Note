@@ -130,7 +130,8 @@
 		from sys_user
 		<where>
 			<if test="userName != null and userName != ''">
-				and user_name like concat('%', #{userName}, '%')
+			<bind name="userNameLike" value="'%' + userName + '%'"/>
+				and user_name like #{userNameLike}
 			</if>
 			<if test="userEmail != null and userEmail != ''">
 				and user_email like concat('%', #{userEmail}, '%')
