@@ -30,6 +30,9 @@ MyBatis 學習筆記
 
 ## Mybatis 動態 SQL：[mybatis-dynmicSql](mybatis-dynmicSql/README.md) （說明都註解在 code 裡）
 
+<br>
+
+## Mybatis 代碼生成工具 __MGB__：[mybatis-generator](mybatis-generator/README.md) （說明都註解在 code 裡）
 
 
 

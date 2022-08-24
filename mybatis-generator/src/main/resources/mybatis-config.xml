@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--    配置 log4j 作為輸出日誌-->
+    <settings>
+        <setting name="logImpl" value="LOG4J"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/> <!-- 開啟欄位映射 entity 時下滑線自動轉駝峰字 -->
+    </settings>
+    <!--配置常用 package 別名-->
+    <typeAliases>
+        <package name="com.frizo.lab.mybatis.model"/>
+    </typeAliases>
+
+    <databaseIdProvider type="DB_VENDOR">
+        <property name="SQL Server" value="sqlserver"/>
+        <property name="MySQL" value="mysql"/>
+        <property name="PostgreSQL" value="postgresql"/>
+        <property name="Oracle" value="oracle"/>
+    </databaseIdProvider>
+
+    <!--配置資料庫連線-->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC">
+                <property name="" value=""/>
+            </transactionManager>
+            <dataSource type="UNPOOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/mybatis?serverTimezone=UTC&amp;characterEncoding=utf-8"/>
+                <property name="username" value="root"/>
+                <property name="password" value="Jarvan1110"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--    MyBatis 的 SQL 語句與映射配置文件-->
+    <mappers>
+        <package name="com.frizo.lab.mybatis.mapper"/>
+    </mappers>
+</configuration>

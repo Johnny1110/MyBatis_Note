@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<!--generatorConfiguration是節點-->
+<!--properties classPathEntry javaModelGenerator 配置必須照順序來-->
+<generatorConfiguration>
+
+    <!--properties 用來指定外部屬性元素，最多可以配置 1 個，也可以忽略不配-->
+    <!--properties 可以指定一個需要在配置中解析使用的外部屬性文件，引入屬性文件後，可以在配置中使用 ${property} 形式引用-->
+    <!--properties 標籤包含 resource 與 url 兩種屬性，只能使用其中一個來指定，同時出現會噴錯 -->
+    <!--resource 指定 classpath 下的屬性文件: com/myproject/generatorConfig.properties-->
+    <!--url 指定文件系統特定位址: file:///C:/myfolder/generatorConfig.properties-->
+    <properties resource="com/myproject/generatorConfig.properties"/>
+
+
+
+    <!--classPathEntry 可以配置多個，也可以不配-->
+    <!--classPathEntry 通過屬性 localtion 指定驅動路徑，像是 location="E:\mysql\mysql-connector-java-5.1.29.jar" -->
+    <classPathEntry location=""/>
+
+    <!--context 至少配置一個，可以配多個-->
+    <!--context 標籤用於指定生成一組對象環境，例如要連接的DB，要生成對象的類型，和要處理的表，運行 MBG 要指定用哪個 context-->
+    <!--context id 是必填屬性，MBG 運行時要指定唯一ID -->
+    <!--defaultModelType 定義 MBG 如何生成 Entity 有 3 種可選-->
+        <!-- * conditional 預設是這個，當表 PK 只有一個欄位，就不為該欄位設立單獨 Entity，直接與其他欄位併在一起成為一個 Entity -->
+        <!-- * flat 為每張表生成一個 Entity，簡單易懂，推薦使用-->
+        <!-- * hierarchical 如果表有 PK，會產生一個單獨的 PK Entity，如果表有 BLOB 欄位，則為表生成一個包含所有 BLOB 的單獨 Entity-->
+        <!--   然後為其他欄位生成一個單獨的 Entity，MBG 在所有生成的 Entity 之間維護繼承關係-->
+    <!--targetRuntime 指定生成代碼的運行時環境-->
+        <!--MyBatis3: 默認值-->
+        <!--MyBatis3Simple: 不生成與 Example 相關方法（就是不幫你弄基本增刪改查）-->
+    <!--introspectedColumnImpl 指定 Column 類的實現類-->
+    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="autoDelimitKeywords" value="true"/>
+    </context>
+
+</generatorConfiguration>
