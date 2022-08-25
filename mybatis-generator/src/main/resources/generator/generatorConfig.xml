@@ -12,13 +12,13 @@
     <!--properties 標籤包含 resource 與 url 兩種屬性，只能使用其中一個來指定，同時出現會噴錯 -->
     <!--resource 指定 classpath 下的屬性文件: com/myproject/generatorConfig.properties-->
     <!--url 指定文件系統特定位址: file:///C:/myfolder/generatorConfig.properties-->
-    <properties resource="com/myproject/generatorConfig.properties"/>
+    <properties resource="generatorConfig.properties"/>
 
 
 
     <!--classPathEntry 可以配置多個，也可以不配-->
     <!--classPathEntry 通過屬性 localtion 指定驅動路徑，像是 location="E:\mysql\mysql-connector-java-5.1.29.jar" -->
-    <classPathEntry location=""/>
+    <!--    <classPathEntry location=""/>-->
 
     <!--context 至少配置一個，可以配多個-->
     <!--context 標籤用於指定生成一組對象環境，例如要連接的DB，要生成對象的類型，和要處理的表，運行 MBG 要指定用哪個 context-->
@@ -32,8 +32,53 @@
         <!--MyBatis3: 默認值-->
         <!--MyBatis3Simple: 不生成與 Example 相關方法（就是不幫你弄基本增刪改查）-->
     <!--introspectedColumnImpl 指定 Column 類的實現類-->
-    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
-        <property name="autoDelimitKeywords" value="true"/>
+    <context id="MySqlContext" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="beginningDelimiter" value="`"/> <!--設定前分隔號-->
+        <property name="endingDelimiter" value="`"/> <!--設定後分隔號-->
+        <property name="javaFileEncoding" value="UTF-8"/>
+
+        <!-- 生成註釋信息 -->
+        <commentGenerator>
+            <property name="suppressAllComments" value="false"/> <!--生成註釋-->
+            <property name="suppressDate" value="true"/> <!--生成註釋包含時間戳-->
+            <property name="addRemarkComments" value="true"/> <!--生成表的 comment 資訊-->
+        </commentGenerator>
+
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/mybatis?serverTimezone=UTC"
+                        userId="root"
+                        password="Jarvan1110">
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
+
+        <!--是否強制將 DECIMAL 和 NUMERIC 類型的 JDBC 資料轉成 Java.math.BigDecimal-->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <!-- Entity 生成配置 -->
+        <javaModelGenerator targetPackage="com.frizo.lab.mybatis.model" targetProject="src\main\java">
+            <property name="trimStrings" value="true" /> <!-- 是否在 setter 加入自動 trim 功能 -->
+            <property name="rootClass" value="com.frizo.lab.mybatis.model.BaseEntity" /> <!-- Entity 基本類 -->
+            <property name="enableSubPackages" value="false"/> <!-- 根據 catalog 與 schema 生成子包，如果為 false 就直接用 targetPackage -->
+        </javaModelGenerator>
+
+        <!-- Mapper.xml 生成配置 -->
+        <sqlMapGenerator targetPackage="com.frizo.lab.mybatis.mapper"  targetProject="src\main\resources">
+            <property name="enableSubPackages" value="false"/> <!-- 根據 catalog 與 schema 生成子包，如果為 false 就直接用 targetPackage -->
+        </sqlMapGenerator>
+
+        <!-- Mapper interface 生成配置 -->
+        <!-- type 分為三種 -->
+            <!-- 1. ANNOTATEDMAPPER: 基於註解的 Mapper 介面，不產出 XML (不建議)-->
+            <!-- 2. MIXEDMAPPER: XML 與註解混用的形式 (不建議)-->
+            <!-- 3. XMLMAPPER: 基於 XML (推薦)-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.frizo.lab.mybatis.mapper"  targetProject="src\main\java"/>
+
+        <!-- table 配置 -->
+        <table tableName="%"> <!-- "%" 指生成全部表 -->
+            <generatedKey column="id" sqlStatement="MySql"/> <!-- 指定自動生成PK的屬性，指定這個標籤，將在自動生成的 insert 語句插入 selectKey 標籤  -->
+        </table>
     </context>
 
 </generatorConfiguration>
