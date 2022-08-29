@@ -13,13 +13,6 @@
         <package name="com.frizo.lab.mybatis.model"/>
     </typeAliases>
 
-    <databaseIdProvider type="DB_VENDOR">
-        <property name="SQL Server" value="sqlserver"/>
-        <property name="MySQL" value="mysql"/>
-        <property name="PostgreSQL" value="postgresql"/>
-        <property name="Oracle" value="oracle"/>
-    </databaseIdProvider>
-
     <!--配置資料庫連線-->
     <environments default="development">
         <environment id="development">

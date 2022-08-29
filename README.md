@@ -34,5 +34,9 @@ MyBatis 學習筆記
 
 ## Mybatis 代碼生成工具 __MGB__：[mybatis-generator](mybatis-generator/README.md) （說明都註解在 code 裡）
 
+<br>
+
+## Mybatis 高級查詢：[mybatis-advanceQuery](mybatis-advanceQuery/README.md) （說明都註解在 code 裡）
+
 
 
