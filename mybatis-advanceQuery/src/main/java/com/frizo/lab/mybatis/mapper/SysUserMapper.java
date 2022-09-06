@@ -45,4 +45,6 @@ public interface SysUserMapper {
     int updateByPrimaryKey(SysUser record);
 
     SysUser selectUserAndRoleById(Long userId);
+
+    SysUser selectUserAndRoleById2(Long userId);
 }
