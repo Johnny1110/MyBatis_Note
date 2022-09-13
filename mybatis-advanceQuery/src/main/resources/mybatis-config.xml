@@ -7,6 +7,7 @@
     <settings>
         <setting name="logImpl" value="LOG4J"/>
         <setting name="mapUnderscoreToCamelCase" value="true"/> <!-- 開啟欄位映射 entity 時下滑線自動轉駝峰字 -->
+        <setting name="aggressiveLazyLoading" value="false"/> <!-- true: 對延遲加載屬性的調用會使帶有延遲加載屬性的物件完整加載 false: 每個屬性安需求加載 (false 時才可以延遲加載) -->
     </settings>
     <!--配置常用 package 別名-->
     <typeAliases>

@@ -43,4 +43,6 @@ public interface SysRoleMapper {
      * @mbggenerated
      */
     int updateByPrimaryKey(SysRole record);
+
+    SysRole selectRoleById(Long id);
 }

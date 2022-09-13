@@ -10,7 +10,9 @@
 
 <br>
 
-### 一對一映射
+---
+
+## 一對一映射
 
 <br>
 
@@ -199,3 +201,92 @@ __建議就用這個了__
     where su.id = #{userId}
   </select>
 ```
+
+<br>
+<br>
+<br>
+<br>
+
+### 終極 LazyLoading
+
+<br>
+
+一對一延遲加載
+
+<br>
+
+首先設定部分設定一下全局參數 `aggressiveLazyLoading`：
+
+<br>
+
+mybatis-config.xml
+
+```xml
+<!-- true: 對延遲加載屬性的調用會使帶有延遲加載屬性的物件完整加載 false: 每個屬性安需求加載 (false 時才可以延遲加載) -->
+<setting name="aggressiveLazyLoading" value="false"/> 
+```
+
+<br>
+
+SysUserMapper.xml
+
+```xml
+    <resultMap id="userRoleMapSelect" type="com.frizo.lab.mybatis.model.SysUser" extends="BaseResultMap">
+        <association property="role" column="{id=role_id}"
+                     fetchType="lazy"
+                     select="com.frizo.lab.mybatis.mapper.SysRoleMapper.selectRoleById"/>
+    </resultMap>
+
+    <select id="selectUserAndRoleByIdSelect" resultMap="userRoleMapSelect">
+        select u.id,
+               u.user_name,
+               u.user_password,
+               u.user_email,
+               u.user_info,
+               u.head_img,
+               u.create_time,
+               ur.role_id
+        from sys_user u
+                 inner join sys_user_role ur on u.id = ur.user_id
+        where u.id = #{id}
+    </select>
+```
+
+<br>
+
+SysUserMapper.java:
+
+```java
+SysUser selectUserAndRoleByIdSelect(Long id);
+```
+
+<br>
+<br>
+
+SysRoleMapper.xml
+
+```xml
+  <select id="selectRoleById" resultMap="BaseResultMap">
+    select * from sys_role where id = #{id}
+  </select>
+```
+
+<br>
+
+SysRoleMapper.java:
+
+```java
+SysRole selectRoleById(Long id);
+```
+
+
+<br>
+<br>
+<br>
+<br>
+
+---
+
+<br>
+
+## 一對多映射
