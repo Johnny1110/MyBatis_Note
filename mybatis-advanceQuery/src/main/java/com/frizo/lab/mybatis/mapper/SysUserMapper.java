@@ -49,4 +49,6 @@ public interface SysUserMapper {
     SysUser selectUserAndRoleById2(Long userId);
 
     SysUser selectUserAndRoleByIdSelect(Long id);
+
+    List<SysUser> selectAllUserAndRoles();
 }

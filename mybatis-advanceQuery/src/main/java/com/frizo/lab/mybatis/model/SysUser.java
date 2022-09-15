@@ -1,6 +1,7 @@
 package com.frizo.lab.mybatis.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Database Table Remarks:
@@ -90,6 +91,16 @@ public class SysUser extends BaseEntity {
     private byte[] headImg;
 
     private SysRole role;
+
+    private List<SysRole> roleList;
+
+    public List<SysRole> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<SysRole> roleList) {
+        this.roleList = roleList;
+    }
 
     public SysRole getRole() {
         return role;

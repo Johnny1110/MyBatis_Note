@@ -290,3 +290,45 @@ SysRole selectRoleById(Long id);
 <br>
 
 ## 一對多映射
+
+<br>
+
+### 基本
+
+<br>
+
+SysUserMapper.xml
+
+```xml
+    <resultMap id="userRoleListMap" extends="BaseResultMap" type="com.frizo.lab.mybatis.model.SysUser">
+        <collection property="roleList" columnPrefix="role_"
+                    resultMap="com.frizo.lab.mybatis.mapper.SysRoleMapper.BaseResultMap"/>
+    </resultMap>
+
+    <select id="selectAllUserAndRoles" resultMap="userRoleListMap">
+        select u.id,
+               u.user_name,
+               u.user_password,
+               u.user_email,
+               u.user_info,
+               u.head_img,
+               u.create_time,
+               r.id          role_id,
+               r.role_name   role_role_name,
+               r.enabled     role_enabled,
+               r.create_by   role_create_by,
+               r.create_time role_create_time
+        from sys_user u
+                 inner join sys_user_role ur on u.id = ur.user_id
+                 inner join sys_role r on ur.role_id = r.id
+    </select>
+```
+
+<br>
+
+
+SysUserMapper.java
+
+```java
+List<SysUser> selectAllUserAndRoles();
+```

@@ -5,6 +5,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
+
 public class SysUserMapperTest extends BaseMapperTest{
 
     @Test
@@ -37,6 +39,19 @@ public class SysUserMapperTest extends BaseMapperTest{
            Assert.assertNotNull(user);
             System.out.println("exec user.getRole()");
            Assert.assertNotNull(user.getRole());
+        }
+    }
+
+    @Test
+    public void testSelectAllUserAndRoles(){
+        try(SqlSession sqlSession = getSqlSession()){
+            SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
+            List<SysUser> users = sysUserMapper.selectAllUserAndRoles();
+            Assert.assertTrue(users.size() > 0);
+            System.out.println("exec user.getRole()");
+            users.forEach(u -> {
+                Assert.assertTrue(u.getRoleList().size() > 0);
+            });
         }
     }
 
